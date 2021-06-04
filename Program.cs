@@ -26,10 +26,6 @@ namespace TicTacToe
             
         }
 
-        // public method to access boar
-        public int[,] GetBoard() {
-            return board;
-        }
 
         //Method to print the board
         // Prints a pretty-ish board
