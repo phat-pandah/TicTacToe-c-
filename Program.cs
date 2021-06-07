@@ -13,9 +13,9 @@ namespace TicTacToe
         private int turn = 0;
         private bool game_won = false;
         private int winner = 0;
-    
+        private int[] score = new int[3];
 
-        // Class contructor, build 3x3 board filled w/ 0s
+        // Class contructor, build 3x3 board filled w/ 0s`
         public Game() {
             for(int i=0; i<3; i++){
                 for(int j=0; j<3; j++){
@@ -23,9 +23,15 @@ namespace TicTacToe
                 }
             }
 
-            
+            for(int i=0; i<score.Length; i++){
+                score[i] = 0;
+            }
         }
 
+        // public method to access boar
+        public int[,] GetBoard() {
+            return board;
+        }
 
         //Method to print the board
         // Prints a pretty-ish board
@@ -86,42 +92,24 @@ namespace TicTacToe
         // Updates class variabel "winner" 
         public void findWinner(){
                     //check rows
-                    int p1_counter = 0;
-                    int p2_counter = 0;
-                    for(int i=0; i<3; i++){
-                        for(int j=0; j<3; j++){
-                            if(board[i, j] == 1){
-                                ++p1_counter;
-                            }
-                            if(board[i, j] == 2){
-                                ++p2_counter;
-                            }
+                    for(int i=0; i < 3; i++){
+                        
+                        // check rows
+                        if(board[i,0] == board[i,1] && board[i,1] == board[i,2] && board[i,0] == 1){
+                            winner = 1;
                         }
-                    }
-                    if(p1_counter == 3){
-                        winner = 1;
-                    }
-                    if(p2_counter == 3){
-                        winner = 2;
-                    }
-
-                    // check columns
-                    for(int i=0; i<3; i++){
-                        for(int j=0 ;j<3; j++){
-                            if(board[j, i] == 1){
-                                ++p1_counter;
-                            }
-                            if(board[j, i] == 2){
-                                ++p2_counter;
-                            }
+                        if(board[i,0] == board[i,1] && board[i,1] == board[i,2] && board[i,0] == 2){
+                            winner = 2;
                         }
-                    }
 
-                    if(p1_counter == 3){
-                        winner = 1;
-                    }
-                    if(p2_counter == 3){
-                        winner = 2;
+                        //check cols
+                        if(board[0,i] == board[1,i] && board[1,i] ==board[2,i] && board[0,i] ==1){
+                            winner = 1;
+                        }
+                        if(board[0,i] == board[1,i] && board[1,i] ==board[2,i] && board[0,i] ==2){
+                            winner = 2;
+                        }
+                        
                     }
 
                     // check diag
@@ -138,6 +126,20 @@ namespace TicTacToe
                     if(board[2,0] == board[1,1] && board[1,1] == board[2,0] && board[2,0] == 1){
                         winner = 2;
                     }
+
+                    //check tie 
+                    
+                    int k = 0;
+                        for(int i=0; i<3; i++){
+                            for(int j=0; j<3; j++){
+                                if(board[i,j] != 0){
+                                    k++;
+                                }
+                            }
+                        }
+                        if(k == 9){
+                            winner =3;
+                        }
                 }
 
         public bool endGame(){
@@ -146,36 +148,50 @@ namespace TicTacToe
             }
             return false;
         }
+        
+        public void showScore(){
+            Console.WriteLine("player 1 | player 2 |   tie   ");
+            Console.WriteLine("------------------------------");
+            Console.WriteLine("   {0}   |    {1}   |   {3}   ");
+        }
 
         public void whoWins(){
             if(winner == 1){
                 Console.WriteLine("Player 1 wins\n");
+                score[1]++;
             } else if(winner == 2){
                 Console.WriteLine("Player 2 wins\n");
+                score[2]++;
             }
-            else {
+            else if(winner ==3){
                 Console.WriteLine("There are no winners only losers!\n");
+                score[0]++;
+            }
+            else{
+                Console.WriteLine("oh poop");
             }
         }
         
 
         public void whosTurn(){
             if(turn%2==0){
-                Console.WriteLine("Player 1's turn :D");
+                Console.WriteLine("Player 1's turn :D\n");
             }
             else{
-                Console.WriteLine("Player 2's turn :D");
+                Console.WriteLine("Player 2's turn :D\n");
             }
         }        
         public void playGame(){
             
-            Console.WriteLine("Who Starts?\n");
+            Console.WriteLine("Who Starts?");
             int start_player = Convert.ToInt16(Console.ReadLine());
-            Console.WriteLine("start player = {0}", start_player);
+            
             if(start_player == 1){
+                Console.WriteLine("\nPlayer 1 shalll start!!!");
                 turn = 0;
             }
             else if(start_player == 2){
+                Console.WriteLine("\nPlayer 2 shalll start!!!");
                 turn = 1;
             } 
             else{
@@ -183,28 +199,33 @@ namespace TicTacToe
             }
 
             bool amPlaying = true;
-            bool curr_game_won = false;
+            
             // This is where the game happens
             while(amPlaying){
+                // decide who plays each itter of loop1
+            
                 whosTurn();
-                Console.WriteLine("Enter x coordinate: ");
+
+                //read coordinates from user
+                Console.Write("Enter x coordinate: ");
                 int temp_x = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("Enter y coordinate: ");
+                Console.Write("Enter y coordinate: ");
                 int temp_y = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("Coord entered: {0}, {1}", temp_x, temp_y);
+                
+                //update & print board to console
                 updateBoard(temp_x, temp_y);
                 printBoard();
+                findWinner();
+                game_won = endGame();
+                // Check for winner 
+                // Need a minimun of 5 moves in total for there to be a winner
+                
 
-                if(turn >= 4){
-                    findWinner();
-                    curr_game_won = endGame();
-                }
-
-                if(curr_game_won == true || turn == 9){
+                //When game is won/over (9 turns = tie game) ask if players want play again
+                if(game_won == true){
                     whoWins();
                     Console.WriteLine("Play again? (press 1 for yes, 2 for no.)");
                     int play_again = Convert.ToInt32(Console.ReadLine());
-                    Console.WriteLine("entered play_again: {0}", play_again);
 
                     if(play_again == 1){
                         amPlaying = true;
@@ -222,6 +243,8 @@ namespace TicTacToe
                         resetGame(start_next);
                     }
                 }
+
+                // keep track of total turns played
                 ++turn;
 
             }
@@ -232,17 +255,13 @@ namespace TicTacToe
 
 
     //TODO: 
-    // Fix play again option from playgame() method
-    // add an if statement in game to pull up instructions at any time
-    // add a score method to keep track of winners over multiple games
-    // make printed msgs on console clearer (maybe the enter x and enter y msg could be on same line?)
-    // check for redundant methods. Maybe some could be merged or absorbed by others.
-    // clean code
-    // clean comments ==> add more, make more explicit/clear
-    // add functionallity do ask who starts after a game is won.
-    // long term, catch errors/exceptions 
-    //  - ex: coordinates out of bounds, etc
-            
+    // Add score system 
+    
+    // add function to catch tie game => loop through board return tie if all pieces on board are non zero
+    // catch errors, coords out of bounds, move was already played, etc.
+    // future features to add:
+    //  - best of n (e.g best of 7)
+    //  - king of the hill, winner always starts
 
     class Driver 
     {
