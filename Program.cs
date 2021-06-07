@@ -152,7 +152,7 @@ namespace TicTacToe
         public void showScore(){
             Console.WriteLine("player 1 | player 2 |   tie   ");
             Console.WriteLine("------------------------------");
-            Console.WriteLine("   {0}   |    {1}   |   {3}   ");
+            Console.WriteLine("    {0}    |     {1}    |    {2}   \n", score[1], score[2], score[0]);
         }
 
         public void whoWins(){
@@ -224,6 +224,7 @@ namespace TicTacToe
                 //When game is won/over (9 turns = tie game) ask if players want play again
                 if(game_won == true){
                     whoWins();
+                    showScore();
                     Console.WriteLine("Play again? (press 1 for yes, 2 for no.)");
                     int play_again = Convert.ToInt32(Console.ReadLine());
 
@@ -255,9 +256,7 @@ namespace TicTacToe
 
 
     //TODO: 
-    // Add score system 
     
-    // add function to catch tie game => loop through board return tie if all pieces on board are non zero
     // catch errors, coords out of bounds, move was already played, etc.
     // future features to add:
     //  - best of n (e.g best of 7)
