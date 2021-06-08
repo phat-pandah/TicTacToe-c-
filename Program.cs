@@ -28,13 +28,7 @@ namespace TicTacToe
             }
         }
 
-        // public method to access boar
-        public int[,] GetBoard() {
-            return board;
-        }
-
-        //Method to print the board
-        // Prints a pretty-ish board
+        // Method to print the board
         public void printBoard() {
             Console.WriteLine("\n");
             for(int i=0; i<3; i++){
@@ -79,6 +73,16 @@ namespace TicTacToe
             }
         }
         
+        public int[] makeMove(){
+            Console.Write("Enter x coordinate: ");
+            int move_x = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Enter y coordinate: ");
+            int move_y = Convert.ToInt32(Console.ReadLine());
+
+            int[] moves = new int[] {move_x, move_y};
+            return moves;
+        }
+
         // Player 1 is represented by 1 in board matrix, player 2 by 0. 
         public void updateBoard(int x, int y){
             if(turn%2 == 0){
@@ -88,6 +92,17 @@ namespace TicTacToe
                 board[x, y] = 2;
             }
         }
+        
+        // Helper function to catch moves already made
+        // 
+        public bool moveExists(int x, int y){
+            if(board[x,y] != 0){
+                return true;
+            } else {
+                return false;
+            }
+        }
+        
         // findWinner is a void function
         // Updates class variabel "winner" 
         public void findWinner(){
@@ -207,18 +222,14 @@ namespace TicTacToe
                 whosTurn();
 
                 //read coordinates from user
-                Console.Write("Enter x coordinate: ");
-                int temp_x = Convert.ToInt32(Console.ReadLine());
-                Console.Write("Enter y coordinate: ");
-                int temp_y = Convert.ToInt32(Console.ReadLine());
+                int[] move = makeMove();
                 
                 //update & print board to console
-                updateBoard(temp_x, temp_y);
+                updateBoard(move[0], move[1]);
                 printBoard();
                 findWinner();
                 game_won = endGame();
-                // Check for winner 
-                // Need a minimun of 5 moves in total for there to be a winner
+                
                 
 
                 //When game is won/over (9 turns = tie game) ask if players want play again
