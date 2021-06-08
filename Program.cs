@@ -83,6 +83,23 @@ namespace TicTacToe
             return moves;
         }
 
+        // Helper function to catch moves already made
+        public bool moveExists(int x, int y){
+            if(board[x,y] != 0){
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        public bool validMove(int x, int y){
+            if(x<0 || x>2 || y<0 || y>2){
+                return false;
+            } else {
+                return true;
+            }
+        }
+        
         // Player 1 is represented by 1 in board matrix, player 2 by 0. 
         public void updateBoard(int x, int y){
             if(turn%2 == 0){
@@ -93,15 +110,7 @@ namespace TicTacToe
             }
         }
         
-        // Helper function to catch moves already made
-        // 
-        public bool moveExists(int x, int y){
-            if(board[x,y] != 0){
-                return true;
-            } else {
-                return false;
-            }
-        }
+        
         
         // findWinner is a void function
         // Updates class variabel "winner" 
@@ -135,10 +144,10 @@ namespace TicTacToe
                     if(board[0,0] == board[1,1] && board[1,1] == board[2,2] && board[2,2] == 2){
                         winner = 2;
                     }
-                    if(board[2,0] == board[1,1] && board[1,1] == board[2,0] && board[2,0] == 1){
+                    if(board[2,0] == board[1,1] && board[1,1] == board[0,2] && board[2,0] == 1){
                         winner = 1;
                     }
-                    if(board[2,0] == board[1,1] && board[1,1] == board[2,0] && board[2,0] == 1){
+                    if(board[2,0] == board[1,1] && board[1,1] == board[0,2] && board[2,0] == 1){
                         winner = 2;
                     }
 
@@ -198,15 +207,13 @@ namespace TicTacToe
         }        
         public void playGame(){
             
-            Console.WriteLine("Who Starts?");
+            Console.WriteLine("Who Starts? (1 for player 1, 2 for player 2)");
             int start_player = Convert.ToInt16(Console.ReadLine());
             
             if(start_player == 1){
-                Console.WriteLine("\nPlayer 1 shalll start!!!");
                 turn = 0;
             }
             else if(start_player == 2){
-                Console.WriteLine("\nPlayer 2 shalll start!!!");
                 turn = 1;
             } 
             else{
@@ -223,6 +230,19 @@ namespace TicTacToe
 
                 //read coordinates from user
                 int[] move = makeMove();
+
+                if(!validMove(move[0], move[1])){
+                    Console.WriteLine("Where are you trying to go?");
+                    Console.WriteLine("try again you donkey!");
+                    move = makeMove();
+                }
+                
+
+                if(moveExists(move[0], move[1])){
+                    Console.WriteLine("Play fair, stop trying to cheat, this move already exists!!!\n");
+                    move = makeMove();
+                }
+
                 
                 //update & print board to console
                 updateBoard(move[0], move[1]);
@@ -253,6 +273,9 @@ namespace TicTacToe
                         Console.WriteLine("Who starts next game?");
                         int start_next = Convert.ToInt32(Console.ReadLine());
                         resetGame(start_next);
+                    } else if(amPlaying == false){
+                        Console.WriteLine("\nFinal Score:\n");
+                        showScore();
                     }
                 }
 
