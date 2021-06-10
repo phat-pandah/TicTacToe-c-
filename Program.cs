@@ -14,6 +14,8 @@ namespace TicTacToe
         private bool game_won = false;
         private int winner = 0;
         private int[] score = new int[3];
+        private int[] cur_move = new int[2];
+        private int[] prev_move = new int[2];
 
         // Class contructor, build 3x3 board filled w/ 0s`
         public Game() {
@@ -25,6 +27,11 @@ namespace TicTacToe
 
             for(int i=0; i<score.Length; i++){
                 score[i] = 0;
+            }
+
+            for(int i=0; i<2; i++){
+                cur_move[i] = 0;
+                prev_move[i] = 0;
             }
         }
 
@@ -110,7 +117,14 @@ namespace TicTacToe
             }
         }
         
-        
+
+        public void undoMove(int[] prev_move){
+            turn -= 1;
+            board[prev_move[0], prev_move[1]] = 0;
+            whosTurn();
+            cur_move = makeMove();
+
+        }
         
         // findWinner is a void function
         // Updates class variabel "winner" 
@@ -197,6 +211,32 @@ namespace TicTacToe
         }
         
 
+        public void grandWinner(){
+            int? maxScore = null;
+            int index = -1;
+            for(int i=0 ; i<3; i++){
+                int curScore = score[i];
+                if(!maxScore.HasValue || curScore > maxScore.Value){
+                    maxScore = curScore;
+                    index = i;
+                }
+            }
+
+            switch(index){
+                case 1:
+                    Console.WriteLine("Player 1 is the grandmaster!!!\n");
+                    break;
+                case 2:
+                    Console.WriteLine("Player 2 whooped player 1's derrier!!!\n");
+                    break;
+                case 0:
+                    Console.WriteLine("Ya'll are both losers..not something we didn't already know!\n");
+                    break;
+                default:
+                Console.WriteLine("This should never be called");
+                break;
+            }   
+        }
         public void whosTurn(){
             if(turn%2==0){
                 Console.WriteLine("Player 1's turn :D\n");
@@ -206,7 +246,7 @@ namespace TicTacToe
             }
         }        
         public void playGame(){
-            
+            Console.WriteLine("To undo move, press 99 in the next player's x move.");
             Console.WriteLine("Who Starts? (1 for player 1, 2 for player 2)");
             int start_player = Convert.ToInt16(Console.ReadLine());
             
@@ -229,30 +269,36 @@ namespace TicTacToe
                 whosTurn();
 
                 //read coordinates from user
-                int[] move = makeMove();
+                cur_move = makeMove();
 
-                if(!validMove(move[0], move[1])){
+                if(cur_move[0] == 99){
+                    undoMove(prev_move);
+
+                }
+
+                Console.WriteLine("curr move: {0}, {1}", cur_move[0], cur_move[1]);
+                if(!validMove(cur_move[0], cur_move[1])){
                     Console.WriteLine("Where are you trying to go?");
                     Console.WriteLine("try again you donkey!");
-                    move = makeMove();
+                    cur_move = makeMove();
                 }
                 
 
-                if(moveExists(move[0], move[1])){
+                if(moveExists(cur_move[0], cur_move[1])){
                     Console.WriteLine("Play fair, stop trying to cheat, this move already exists!!!\n");
-                    move = makeMove();
+                    cur_move = makeMove();
                 }
 
                 
                 //update & print board to console
-                updateBoard(move[0], move[1]);
+                updateBoard(cur_move[0], cur_move[1]);
                 printBoard();
                 findWinner();
                 game_won = endGame();
                 
                 
 
-                //When game is won/over (9 turns = tie game) ask if players want play again
+                //When game is won/over ask if players want play again
                 if(game_won == true){
                     whoWins();
                     showScore();
@@ -268,18 +314,24 @@ namespace TicTacToe
                         Console.Write("Wrong answer.. I am terminating your game!!!");
                         amPlaying = false;
                     }
+
+                    // Decides who starts next game
                     if(amPlaying == true){
                         
                         Console.WriteLine("Who starts next game?");
                         int start_next = Convert.ToInt32(Console.ReadLine());
                         resetGame(start_next);
-                    } else if(amPlaying == false){
+                    } 
+                    //Display final score 
+                    else if(amPlaying == false){
                         Console.WriteLine("\nFinal Score:\n");
                         showScore();
+                        grandWinner();
                     }
                 }
 
-                // keep track of total turns played
+                // keep track of total turns played and update prev move
+                prev_move = cur_move;
                 ++turn;
 
             }
@@ -291,7 +343,7 @@ namespace TicTacToe
 
     //TODO: 
     
-    // catch errors, coords out of bounds, move was already played, etc.
+    
     // future features to add:
     //  - best of n (e.g best of 7)
     //  - king of the hill, winner always starts

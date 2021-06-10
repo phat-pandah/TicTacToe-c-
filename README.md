@@ -11,6 +11,15 @@ Update 2:
 -   Catches if a move already exists. If a player tries to make a move that already exists,
     they will be asked to play again.
 
+Update 3:
+----------
+- Added undo feature
+    -   Players can undo their last move and the game will go back to how it was 1 move back
+-   Fixed console display
+-   Added grand winner message.
+    -   When players are done playing, final score shows up along with a message declaring the winner
+    
+
 Coming soon:
 ------------
 
