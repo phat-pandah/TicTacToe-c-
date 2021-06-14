@@ -16,6 +16,7 @@ namespace TicTacToe
         private int[] score = new int[3];
         private int[] cur_move = new int[2];
         private int[] prev_move = new int[2];
+        private bool kingodthehill = false; // by default no king of hill
 
         // Class contructor, build 3x3 board filled w/ 0s`
         public Game() {
@@ -247,6 +248,23 @@ namespace TicTacToe
         }        
         public void playGame(){
             Console.WriteLine("To undo move, press 99 in the next player's x move.");
+            Console.WriteLine("Winner always starts?? (1 for yes, 2 for no");
+            int king = Convert.ToInt32(Console.ReadLine());
+            
+                switch(king){
+                    case 1:
+                    kingodthehill=true;
+                    break;
+
+                    case 2:
+                    kingodthehill=false;
+                    break;
+
+                    default:
+                    break;
+                }
+                
+            
             Console.WriteLine("Who Starts? (1 for player 1, 2 for player 2)");
             int start_player = Convert.ToInt16(Console.ReadLine());
             
@@ -317,10 +335,13 @@ namespace TicTacToe
 
                     // Decides who starts next game
                     if(amPlaying == true){
-                        
-                        Console.WriteLine("Who starts next game?");
-                        int start_next = Convert.ToInt32(Console.ReadLine());
-                        resetGame(start_next);
+                        if(kingodthehill){
+                            resetGame(winner);
+                        } else {
+                            Console.WriteLine("Who starts next game?");
+                            int start_next = Convert.ToInt32(Console.ReadLine());
+                            resetGame(start_next);
+                        }
                     } 
                     //Display final score 
                     else if(amPlaying == false){

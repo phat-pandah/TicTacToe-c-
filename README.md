@@ -3,6 +3,11 @@ Simple Console TicTac Toe Game in C#.
 Players take turn making a move.
 When game is won/finished, they can play again.
 
+Update 1:
+---------
+-   Greatly improved look of  the game on console
+-    New play again feature
+
 Update 2:
 ----------
 -   fixed a few bugs (game would end if a certain set of moves were made)
@@ -19,11 +24,7 @@ Update 3:
 -   Added grand winner message.
     -   When players are done playing, final score shows up along with a message declaring the winner
     
-
-Coming soon:
-------------
-
--   King of the hill feature:
-    * Winner always start next game
--   best of n game mode (e.g. best of 7); can then proceed to play another best of n series
--   Create GUI
+Update 3.1
+----------
+-    Added king of the hill option
+    -   Winner always starts
